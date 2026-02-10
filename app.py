@@ -1,107 +1,41 @@
-from src.config.settings import GEMINI_API_KEY, CHATBOT_NAME
+from src.config.settings import MODEL_NAME, MODEL_ID, MODEL_TEMPERATURE, MODEL_OPTIONS
+from src.utils import update_chatbot
 
-import os
 import gradio as gr
-from google import genai
-from google.genai.types import GenerateContentConfig, GoogleSearch, Tool
-
-# Initialize GenAI Client
-API_KEY = os.getenv("GOOGLE_API_KEY")  # Ensure to set this in Hugging Face Secrets
-client = genai.Client(api_key=API_KEY)
-MODEL_ID = "gemini-2.0-flash"  # Replace with your desired model ID
-
-def google_search_query(question, use_web_search):
-    try:
-        # Generate the AI response without web search initially
-        response = client.models.generate_content(
-            model=MODEL_ID,
-            contents=question,
-        )
-        ai_response = response.text  # AI response as plain text
-
-        if use_web_search:
-            # If user selects web search, redefine the tool and generate response with web search
-            google_search_tool = Tool(google_search=GoogleSearch())
-            response = client.models.generate_content(
-                model=MODEL_ID,
-                contents=question,
-                config=GenerateContentConfig(tools=[google_search_tool]),
-            )
-            search_results = response.candidates[0].grounding_metadata.search_entry_point.rendered_content
-        else:
-            search_results = "Web search not used."
-
-        return ai_response, search_results
-    except Exception as e:
-        return f"Error: {str(e)}", ""
 
 # Gradio Interface using Chatbot and conditional web search
-with gr.Blocks(theme=gr.themes.Glass(secondary_hue = "violet")) as app:
-    gr.Markdown("# Gemini 2.0 Google Search Custom UI")
-    with gr.Row(): 
+with gr.Blocks(theme=gr.themes.Soft(primary_hue="emerald", secondary_hue="sky")) as app:
+    gr.Markdown(f"# {MODEL_NAME}")
+    with gr.Row():
         chatbot = gr.Chatbot(label="Chatbot Responses")
     with gr.Row():
         question_input = gr.Textbox(lines=2, label="Ask a Question")
         web_search_checkbox = gr.Checkbox(label="Enhance with Web Search", value=False)
     with gr.Row():
+        model_input = gr.Dropdown(label="Model", value=MODEL_ID, choices=MODEL_OPTIONS)
+        temperature_slider = gr.Slider(
+            minimum=0.0,
+            maximum=2.0,
+            value=MODEL_TEMPERATURE,
+            step=0.1,
+            label="Temperature",
+        )
+        stream_checkbox = gr.Checkbox(label="Stream response", value=True)
+    with gr.Row():
         submit_button = gr.Button("Submit")
-    
-    def update_chatbot(question, use_web_search, chat_log):
-        ai_response, search_results = google_search_query(question, use_web_search)
-        chat_log.append(("You", question))
-        chat_log.append(("AI", ai_response))
-        if use_web_search:
-            chat_log.append(("AI + Web Search", search_results))
-        return chat_log
-    
+
     submit_button.click(
         fn=update_chatbot,
-        inputs=[question_input, web_search_checkbox, chatbot],
-        outputs=[chatbot]
+        inputs=[
+            question_input,
+            web_search_checkbox,
+            chatbot,
+            model_input,
+            temperature_slider,
+            stream_checkbox,
+        ],
+        outputs=[chatbot],
     )
-import os
-import gradio as gr
-from google import genai
-from google.genai.types import GenerateContentConfig, GoogleSearch, Tool
-
-# Initialize GenAI Client
-API_KEY = os.getenv("GOOGLE_API_KEY")  # Ensure to set this in Hugging Face Secrets
-client = genai.Client(api_key=API_KEY)
-MODEL_ID = "gemini-2.0-flash"  # Replace with your desired model ID
-
-def google_search_query(question):
-    try:
-        # Define the Google Search Tool
-        google_search_tool = Tool(google_search=GoogleSearch())
-        
-        # Generate the response
-        response = client.models.generate_content(
-            model=MODEL_ID,
-            contents=question,
-            config=GenerateContentConfig(tools=[google_search_tool]),
-        )
-
-        # Extract AI response and search results
-        ai_response = response.text  # AI response as plain text
-        search_results = response.candidates[0].grounding_metadata.search_entry_point.rendered_content
-
-        return ai_response, search_results
-    except Exception as e:
-        return f"Error: {str(e)}", ""
-
-# Gradio Interface
-app = gr.Interface(
-    fn=google_search_query,
-    inputs=gr.Textbox(lines=2, label="Ask a Question"),
-    outputs=[
-        gr.Textbox(label="AI Response"),
-        gr.HTML(label="Search Results"),
-    ],
-    title="Google Search with Gemini AI",
-    description="Ask a question, and the AI will use Google search tools to provide an answer along with contextual search results.",
-)
 
 if __name__ == "__main__":
     app.launch(share=True)
-
-app.launch()
