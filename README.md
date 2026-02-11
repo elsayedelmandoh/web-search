@@ -30,7 +30,20 @@ A Gradio-based web app that combines Google Search with Gemini AI to produce gro
 web-search/
 ├── app.py
 ├── requirements.txt
-└── README.md
+├── README.md
+├── .gitignore
+├── .gitattributes
+├── .env
+├── research/
+│   └── notebook.ipynb
+└── src/
+    ├── __init__.py
+    ├── config/
+    │   ├── __init__.py
+    │   └── settings.py
+    └── utils/
+        ├── __init__.py
+        └── chat.py
 ```
 
 ## Setup
