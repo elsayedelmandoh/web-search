@@ -13,26 +13,19 @@ short_description: An app for grounded response
 
 ## Table of Contents
 - [Overview](#overview)
-- [Features](#features)
 - [Project Structure](#project-structure)
 - [Setup](#setup)
-- [Configuration](#configuration)
-- [Usage](#usage)
+  - [Clone from GitHub](#clone-from-github)
+  - [Conda environment](#conda-environment)
+  - [Run locally](#run-locally)
+  - [Duplicate Hugging Face Space](#duplicate-hugging-face-space)
+- [Contributing](#contributing)
+- [Author](#author)
 
 ## Overview
-
-A Gradio-based web application that combines Google Search with Gemini AI to provide grounded, contextual responses with real-time web information.
-
-## Features
-
-- Real-time Google Search integration
-- Gemini AI-powered responses
-- Customizable chat interface
-- Environment-based configuration
-- Professional assistant mode
+A Gradio-based web app that combines Google Search with Gemini AI to produce grounded, contextual responses.
 
 ## Project Structure
-
 ```
 web-search/
 ├── app.py
@@ -42,24 +35,51 @@ web-search/
 
 ## Setup
 
-1. Clone or download this project
-2. Install dependencies: `pip install -r requirements.txt`
-3. Configure environment variables (see Configuration section)
-4. Run: `python app.py`
+- GitHub repo: [link](https://github.com/elsayedelmandoh/web-search)
+- Hugging Face Space: [link](https://huggingface.co/spaces/elsayedelmandoh/Gemini_3_Web_Search)
 
-## Configuration
+### Clone from GitHub
+```bash
+git clone https://github.com/elsayedelmandoh/web-search
+cd web-search
+```
 
-Set the following environment variables:
+### Conda environment
+```bash
+# create & activate
+conda create -n web-search python=3.12 -y
+conda activate web-search
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `GEMINI_API_KEY` | Yes | — | API key for Gemini |
-| `CHATBOT_NAME` | No | Assistant | Name displayed in chat |
-| `DEFAULT_MODEL_ID` | No | `gemini-2.0-flash` | Gemini model version |
-| `DEFAULT_TEMPERATURE` | No | `0.7` | Response creativity (0-1) |
-| `SYSTEM_INSTRUCTION` | No | Professional assistant | System prompt |
+# install pip then dependencies
+conda install pip -y
+pip install -r requirements.txt
+```
+You may use a .env loader or store vars in the Hugging Face Space secrets.
 
-## Usage
+### Run locally
+```bash
+python app.py
+```
+Open the URL printed in the terminal.
 
-Launch the app and interact with the chat interface. Searches are performed automatically for grounded responses.
+### Duplicate Hugging Face Space
 
+Hugging Face Space URL used in this project:
+https://huggingface.co/spaces/elsayedelmandoh/Gemini_3_Web_Search
+
+1. Sign in to Hugging Face.
+2. Go to the Space you want to duplicate.
+3. Click the "Duplicate this Space" button.
+4. Choose a new name and visibility, then Duplicate Space.
+5. In the new Space settings add secrets (GEMINI_API_KEY) and push code.
+
+## Contributing
+1. Fork the repository.
+2. Create a branch for your change.
+3. Make changes, commit with clear messages.
+4. Push to your fork and open a pull request.
+
+## Author
+Developed by Elsayed Elmandoh — NLP Engineer.  
+LinkedIn: https://linkedin.com/in/elsayed-elmandoh-b5849a1b8/  
+X/Twitter: https://x.com/aangpy
