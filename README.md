@@ -4,7 +4,7 @@ emoji: 🏢
 colorFrom: green
 colorTo: red
 sdk: gradio
-sdk_version: 5.9.0
+sdk_version: 6.5.1
 app_file: app.py
 pinned: false
 short_description: An app for grounded response
